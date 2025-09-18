@@ -19,13 +19,13 @@ const createTempUser = async () => {
     
     // Verificar se o usuário já existe
     const existingUser = await prisma.user.findUnique({
-      where: { email: 'teste@costa.com.br' }
+      where: { email: 'admin@costa.com.br' }
     });
 
     if (existingUser) {
       console.log('⚠️ Usuário já existe, removendo...');
       await prisma.user.delete({
-        where: { email: 'teste@costa.com.br' }
+        where: { email: 'admin@costa.com.br' }
       });
       console.log('✅ Usuário removido');
     }
@@ -33,30 +33,90 @@ const createTempUser = async () => {
     // Hash da senha
     const hashedPassword = await bcrypt.hash('123456', 10);
 
-    // Permissões do usuário
+    // Permissões completas do usuário
     const permissions = [
+      // Usuários
       'create:user',
       'read:user',
       'update:user',
       'delete:user',
+      
+      // Clientes
+      'create:client',
+      'read:client',
+      'update:client',
+      'delete:client',
+      
+      // Ocorrências
       'create:ocorrencia',
       'read:ocorrencia',
       'update:ocorrencia',
       'delete:ocorrencia',
-      'read:dashboard',
+      
+      // Prestadores
+      'create:prestador',
+      'read:prestador',
+      'update:prestador',
+      'delete:prestador',
+      
+      // Contratos
+      'create:contrato',
+      'read:contrato',
+      'update:contrato',
+      'delete:contrato',
+      
+      // Relatórios
+      'create:relatorio',
       'read:relatorio',
+      'update:relatorio',
+      'delete:relatorio',
+      
+      // Dashboard
+      'read:dashboard',
+      
+      // Fotos
       'create:foto',
       'read:foto',
       'update:foto',
       'delete:foto',
-      'upload:foto'
+      'upload:foto',
+      
+      // Veículos
+      'create:veiculo',
+      'read:veiculo',
+      'update:veiculo',
+      'delete:veiculo',
+      
+      // Rastreamento
+      'create:rastreamento',
+      'read:rastreamento',
+      'update:rastreamento',
+      'delete:rastreamento',
+      
+      // Pagamentos
+      'create:pagamento',
+      'read:pagamento',
+      'update:pagamento',
+      'delete:pagamento',
+      
+      // Checklist
+      'create:checklist',
+      'read:checklist',
+      'update:checklist',
+      'delete:checklist',
+      
+      // Apoios Adicionais
+      'create:apoio',
+      'read:apoio',
+      'update:apoio',
+      'delete:apoio'
     ];
 
     // Criar usuário
     const user = await prisma.user.create({
       data: {
-        name: 'Usuário Teste Costa',
-        email: 'teste@costa.com.br',
+        name: 'Admin Costa - Usuário Teste',
+        email: 'admin@costa.com.br',
         passwordHash: hashedPassword,
         role: 'admin',
         permissions: JSON.stringify(permissions),
@@ -73,7 +133,7 @@ const createTempUser = async () => {
     console.log(`   Ativo: ${user.active}`);
     console.log('');
     console.log('🔑 Credenciais de Login:');
-    console.log(`   Email: teste@costa.com.br`);
+    console.log(`   Email: admin@costa.com.br`);
     console.log(`   Senha: 123456`);
     console.log('');
     console.log('⚠️ IMPORTANTE: Altere a senha após o primeiro login!');
@@ -87,6 +147,10 @@ const createTempUser = async () => {
 
 // Executar o script
 createTempUser();
+
+
+
+
 
 
 

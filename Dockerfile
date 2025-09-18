@@ -17,6 +17,9 @@ COPY . .
 # Debug: listar conteúdo da pasta prisma
 RUN ls -l prisma
 
+# Verificar se o schema.prisma existe
+RUN cat prisma/schema.prisma | head -10
+
 # Agora gere o client do Prisma
 RUN npx prisma generate
 

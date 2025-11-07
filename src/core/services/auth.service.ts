@@ -49,6 +49,7 @@ export class AuthService {
       permissions = [];
     }
 
+    const jwtSecret = process.env.JWT_SECRET as string;
     const token = jwt.sign(
       {
         id: user.id,
@@ -56,7 +57,7 @@ export class AuthService {
         role: user.role,
         permissions
       },
-      process.env.JWT_SECRET,
+      jwtSecret,
       { expiresIn: JWT_EXPIRATION }
     );
 

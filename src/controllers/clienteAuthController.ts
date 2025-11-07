@@ -79,6 +79,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
       }
 
       // Gerar token JWT para cliente
+      const jwtSecret = process.env.JWT_SECRET as string;
       const token = jwt.sign(
         {
           sub: clienteAuth.cliente.id.toString(),
@@ -86,7 +87,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
           cnpj: clienteAuth.cliente.cnpj,
           tipo: 'cliente'
         },
-        process.env.JWT_SECRET,
+        jwtSecret,
         { expiresIn: JWT_EXPIRATION }
       );
 

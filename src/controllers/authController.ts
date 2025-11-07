@@ -104,6 +104,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         
         console.log('Permissões do usuário:', permissions);
 
+        const jwtSecret = process.env.JWT_SECRET as string;
         const token = jwt.sign(
           {
             sub: user.id,
@@ -112,7 +113,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             role: user.role,
             permissions: permissions
           },
-          process.env.JWT_SECRET,
+          jwtSecret,
           { expiresIn: JWT_EXPIRATION }
         );
 
@@ -194,6 +195,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
       }
 
       // Gerar token JWT para cliente
+      const jwtSecret = process.env.JWT_SECRET as string;
       const token = jwt.sign(
         {
           sub: cliente.id.toString(),
@@ -201,7 +203,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
           cnpj: cliente.cnpj,
           tipo: 'cliente'
         },
-        process.env.JWT_SECRET,
+        jwtSecret,
         { expiresIn: JWT_EXPIRATION }
       );
 

@@ -9,6 +9,7 @@ const envSchema = z.object({
   PORT: z.string().transform(Number).default('8080'),
   DATABASE_URL: z.string().default('postgresql://localhost:5432/segtrack'),
   JWT_SECRET: z.string().default('default-jwt-secret-key-for-development-only-change-in-production'),
+  JWT_EXPIRATION: z.string().default('7d'),
   BASE_URL: z.string().optional(),
   FRONTEND_URL: z.string().optional(),
 });

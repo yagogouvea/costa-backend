@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ensurePrisma } from '../lib/prisma';
+import { JWT_EXPIRATION } from '../config/jwt.config';
 
 // TODO: Controller simplificado para autenticação de clientes
 // O modelo ClienteAuth não existe no schema atual, então implementamos uma versão básica
@@ -53,7 +54,7 @@ export const loginClienteAuth = async (req: Request, res: Response): Promise<voi
     }
 
     // Gerar token JWT para cliente
-    const token = jwt.sign(
+      const token = jwt.sign(
       {
         sub: cliente.id.toString(),
         razaoSocial: cliente.nome,
@@ -61,7 +62,7 @@ export const loginClienteAuth = async (req: Request, res: Response): Promise<voi
         tipo: 'cliente'
       },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+        { expiresIn: JWT_EXPIRATION }
     );
 
     console.log('Token de cliente gerado com sucesso');

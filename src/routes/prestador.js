@@ -84,7 +84,7 @@ router.post('/login', async (req, res) => {
         tipo: 'prestador'
       },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRATION || '12h' }
+      { expiresIn: process.env.JWT_EXPIRATION || '7d' }
     );
 
     console.log('✅ [prestador/login] Login bem-sucedido');

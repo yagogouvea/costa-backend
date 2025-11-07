@@ -7,6 +7,7 @@ exports.AuthService = void 0;
 const prisma_1 = require("../lib/prisma");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const jwt_config_1 = require("../config/jwt.config");
 class AuthService {
     constructor() {
         this.JWT_SECRET = process.env.JWT_SECRET;
@@ -46,7 +47,7 @@ class AuthService {
             email: user.email,
             role: user.role,
             permissions: user.permissions
-        }, secret, { expiresIn: '24h' });
+        }, secret, { expiresIn: jwt_config_1.JWT_EXPIRATION });
         return {
             token,
             user: {

@@ -132,6 +132,9 @@ export class CheckListService {
           
           // Observação geral
           observacao_ocorrencia: cleanedData.observacao_ocorrencia,
+
+          // Veículo reaberto para contrato
+          veiculo_reaberto_contrato: cleanedData.veiculo_reaberto_contrato,
           
           // ✅ NOVO: Controle de tratamento - dispensado o checklist
           dispensado_checklist: cleanedData.dispensado_checklist
@@ -207,6 +210,9 @@ export class CheckListService {
           
           // Observação geral
           observacao_ocorrencia: cleanedData.observacao_ocorrencia,
+
+          // Veículo reaberto para contrato
+          veiculo_reaberto_contrato: cleanedData.veiculo_reaberto_contrato,
           
           // ✅ NOVO: Controle de tratamento - dispensado o checklist
           dispensado_checklist: cleanedData.dispensado_checklist
@@ -256,6 +262,9 @@ export class CheckListService {
 
     const cleanedData = { ...data };
 
+    cleanedData.veiculo_reaberto_contrato =
+      data.veiculo_reaberto_contrato === true || data.veiculo_reaberto_contrato === 'true';
+
     // Determinar qual opção foi selecionada
     const lojaSelected = data.loja_selecionada === true;
     const guinchoSelected = data.guincho_selecionado === true;
@@ -286,6 +295,8 @@ export class CheckListService {
       cleanedData.liberado_local_selecionado = false;
       cleanedData.liberado_nome_responsavel = null;
       cleanedData.liberado_numero_referencia = null;
+
+      cleanedData.veiculo_reaberto_contrato = false;
     }
     
     // ✅ GUINCHO SELECIONADO: Limpar dados de Loja e Apreensão
@@ -309,6 +320,8 @@ export class CheckListService {
       cleanedData.liberado_local_selecionado = false;
       cleanedData.liberado_nome_responsavel = null;
       cleanedData.liberado_numero_referencia = null;
+
+      cleanedData.veiculo_reaberto_contrato = false;
     }
     
     // ✅ APREENSÃO SELECIONADA: Limpar dados de Loja e Guincho
@@ -336,6 +349,8 @@ export class CheckListService {
       cleanedData.liberado_local_selecionado = false;
       cleanedData.liberado_nome_responsavel = null;
       cleanedData.liberado_numero_referencia = null;
+
+      cleanedData.veiculo_reaberto_contrato = false;
     }
 
     // ✅ LIBERADO NO LOCAL SELECIONADO: Limpar Loja, Guincho e Apreensão
@@ -363,6 +378,8 @@ export class CheckListService {
       cleanedData.nome_dp_batalhao = null;
       cleanedData.endereco_apreensao = null;
       cleanedData.numero_bo_noc = null;
+
+      cleanedData.veiculo_reaberto_contrato = false;
     }
     
     // ✅ NENHUMA OPÇÃO SELECIONADA: Limpar todos os dados específicos
@@ -391,6 +408,8 @@ export class CheckListService {
       cleanedData.nome_dp_batalhao = null;
       cleanedData.endereco_apreensao = null;
       cleanedData.numero_bo_noc = null;
+
+      cleanedData.veiculo_reaberto_contrato = false;
     }
 
     console.log(`✅ [CheckListService] Limpeza concluída. Resultado:`, {

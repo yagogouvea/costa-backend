@@ -63,7 +63,7 @@ DATABASE_URL="mysql://user:password@localhost:3306/segtrack"
 
 # Configurações JWT
 JWT_SECRET=seu_secret_aqui
-JWT_EXPIRATION=24h
+JWT_EXPIRATION=7d
 
 # Porta do servidor
 PORT=3001

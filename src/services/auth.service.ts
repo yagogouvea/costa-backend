@@ -1,6 +1,7 @@
 import { prisma } from '../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { JWT_EXPIRATION } from '../config/jwt.config';
 import { Prisma } from '@prisma/client';
 
 interface LoginResponse {
@@ -61,7 +62,7 @@ export class AuthService {
         permissions: user.permissions
       },
       secret,
-      { expiresIn: '24h' }
+      { expiresIn: JWT_EXPIRATION }
     );
 
     return {

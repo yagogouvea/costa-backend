@@ -76,3 +76,5 @@ async function testarAPICosta() {
 // Executar teste
 testarAPICosta();
 
+
+

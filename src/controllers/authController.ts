@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ensurePrisma } from '../lib/prisma';
+import { JWT_EXPIRATION } from '../config/jwt.config';
 
 interface PrismaUser {
   id: string;
@@ -112,7 +113,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             permissions: permissions
           },
           process.env.JWT_SECRET,
-          { expiresIn: '12h' }
+          { expiresIn: JWT_EXPIRATION }
         );
 
         console.log('Token gerado com sucesso');
@@ -201,7 +202,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
           tipo: 'cliente'
         },
         process.env.JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: JWT_EXPIRATION }
       );
 
       console.log('Token de cliente gerado com sucesso');

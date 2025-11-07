@@ -1,6 +1,7 @@
 import { ensurePrisma } from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { JWT_EXPIRATION } from '../../config/jwt.config';
 
 interface LoginData {
   email: string;
@@ -56,7 +57,7 @@ export class AuthService {
         permissions
       },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: JWT_EXPIRATION }
     );
 
     return {

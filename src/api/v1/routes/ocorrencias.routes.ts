@@ -146,6 +146,7 @@ router.get('/dashboard', async (req, res) => {
   }
 }); // ✅ NOVA ROTA OTIMIZADA
 router.get('/:id', controller.findById);
+router.post('/:id/cancelar', controller.cancel);
 
 // Buscar ocorrências por prestador
 router.get('/prestador/:prestadorId', authenticateToken, async (req, res) => {

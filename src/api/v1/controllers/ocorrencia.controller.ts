@@ -172,7 +172,86 @@ export class OcorrenciaController {
       
       console.log('✅ [OcorrenciaController] Ocorrência encontrada:', ocorrenciaExistente.id);
       console.log('🔍 [OcorrenciaController] Descrição atual:', ocorrenciaExistente.descricao);
-      console.log('🔍 [OcorrenciaController] Dados para atualização:', req.body);
+      console.log('🔍 [OcorrenciaController] Dados para atualização (brutos):', req.body);
+
+      const body = { ...req.body } as Record<string, any>;
+
+      const parseDate = (value: any): Date | null | undefined => {
+        if (value === undefined) return undefined;
+        if (value === null || value === '') return null;
+        if (value instanceof Date) return value;
+        if (typeof value === 'string') {
+          const trimmed = value.trim();
+          if (!trimmed) return null;
+          const isoLike = /^\d{4}-\d{2}-\d{2}$/.test(trimmed)
+            ? `${trimmed}T00:00:00.000Z`
+            : trimmed;
+          const parsed = new Date(isoLike);
+          if (!Number.isNaN(parsed.getTime())) {
+            return parsed;
+          }
+          console.warn('⚠️ [OcorrenciaController] Valor de data inválido ignorado:', value);
+          return undefined;
+        }
+        return value;
+      };
+
+      const parseNumber = (value: any): number | null | undefined => {
+        if (value === undefined) return undefined;
+        if (value === null || value === '') return null;
+        if (typeof value === 'number') {
+          return Number.isNaN(value) ? undefined : value;
+        }
+        if (typeof value === 'string') {
+          const normalized = value.replace(/,/g, '.');
+          const parsed = Number(normalized);
+          return Number.isNaN(parsed) ? undefined : parsed;
+        }
+        return undefined;
+      };
+
+      const dateFields = [
+        'inicio',
+        'chegada',
+        'termino',
+        'encerrada_em',
+        'data_acionamento',
+        'data_chamado',
+        'data_recuperacao'
+      ];
+
+      const numericFields = [
+        'km',
+        'km_final',
+        'km_inicial',
+        'despesas',
+        'valor_carga',
+        'km_acl'
+      ];
+
+      dateFields.forEach((field) => {
+        if (field in body) {
+          const parsed = parseDate(body[field]);
+          if (parsed !== undefined) {
+            body[field] = parsed;
+          } else {
+            delete body[field];
+          }
+        }
+      });
+
+      numericFields.forEach((field) => {
+        if (field in body) {
+          const parsed = parseNumber(body[field]);
+          if (parsed !== undefined) {
+            body[field] = parsed;
+          } else {
+            delete body[field];
+          }
+        }
+      });
+
+      console.log('🧹 [OcorrenciaController] Dados sanitizados para update:', body);
       
       // Verificar se há dados para atualizar
       if (!req.body || Object.keys(req.body).length === 0) {
@@ -195,7 +274,7 @@ export class OcorrenciaController {
       const ocorrencia = await prisma.$transaction(async (tx) => {
         const updated = await tx.ocorrencia.update({
           where: { id: Number(id) },
-          data: req.body,
+          data: body,
           include: {
             checklist: true,
             fotos: true
@@ -218,6 +297,64 @@ export class OcorrenciaController {
         message: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined
       });
+      return res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  }
+
+  async cancel(req: Request, res: Response) {
+    try {
+      const id = Number(req.params.id);
+
+      if (Number.isNaN(id)) {
+        console.warn('[OcorrenciaController] Cancelamento com ID inválido:', req.params.id);
+        return res.status(400).json({ error: 'ID inválido' });
+      }
+
+      console.log(`[OcorrenciaController] Solicitando cancelamento da ocorrência ${id}`);
+
+      const ocorrenciaExistente = await prisma.ocorrencia.findUnique({
+        where: { id }
+      });
+
+      if (!ocorrenciaExistente) {
+        console.warn(`[OcorrenciaController] Ocorrência ${id} não encontrada para cancelamento`);
+        return res.status(404).json({ error: 'Ocorrência não encontrada' });
+      }
+
+      if (ocorrenciaExistente.status === 'cancelada') {
+        console.log(`[OcorrenciaController] Ocorrência ${id} já está cancelada`);
+        const ocorrencia = await prisma.ocorrencia.findUnique({
+          where: { id },
+          include: {
+            checklist: true,
+            fotos: true
+          }
+        });
+        return res.json(ocorrencia);
+      }
+
+      const agora = new Date();
+
+      const ocorrenciaAtualizada = await prisma.ocorrencia.update({
+        where: { id },
+        data: {
+          status: 'cancelada',
+          resultado: 'CANCELADO',
+          sub_resultado: null,
+          encerrada_em: ocorrenciaExistente.encerrada_em ?? agora,
+          atualizado_em: agora
+        },
+        include: {
+          checklist: true,
+          fotos: true
+        }
+      });
+
+      console.log(`[OcorrenciaController] Ocorrência ${id} cancelada com sucesso`);
+
+      return res.json(ocorrenciaAtualizada);
+    } catch (error: unknown) {
+      console.error('[OcorrenciaController] Erro ao cancelar ocorrência:', error);
       return res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }

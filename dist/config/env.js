@@ -13,6 +13,7 @@ const envSchema = zod_1.z.object({
     PORT: zod_1.z.string().transform(Number).default('8080'),
     DATABASE_URL: zod_1.z.string().default('postgresql://localhost:5432/segtrack'),
     JWT_SECRET: zod_1.z.string().default('default-jwt-secret-key-for-development-only-change-in-production'),
+    JWT_EXPIRATION: zod_1.z.string().default('7d'),
     BASE_URL: zod_1.z.string().optional(),
     FRONTEND_URL: zod_1.z.string().optional(),
 });

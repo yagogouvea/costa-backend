@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginPrestador = exports.seedAdmin = exports.cadastrarCliente = exports.loginCliente = exports.login = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const jwt_config_1 = require("../config/jwt.config");
 const prisma_1 = require("../lib/prisma");
 // Função para normalizar CNPJ (remover pontos, traços e barras)
 const normalizarCNPJ = (cnpj) => {
@@ -93,7 +94,7 @@ const login = async (req, res) => {
                     email: user.email,
                     role: user.role,
                     permissions: permissions
-                }, process.env.JWT_SECRET, { expiresIn: '12h' });
+                }, process.env.JWT_SECRET, { expiresIn: jwt_config_1.JWT_EXPIRATION });
                 console.log('Token gerado com sucesso');
                 res.json({
                     token,
@@ -170,7 +171,7 @@ const loginCliente = async (req, res) => {
                 razaoSocial: cliente.nome,
                 cnpj: cliente.cnpj,
                 tipo: 'cliente'
-            }, process.env.JWT_SECRET, { expiresIn: '7d' });
+            }, process.env.JWT_SECRET, { expiresIn: jwt_config_1.JWT_EXPIRATION });
             console.log('Token de cliente gerado com sucesso');
             res.json({
                 token,

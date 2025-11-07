@@ -207,6 +207,55 @@ class OcorrenciaController {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     }
+    async cancel(req, res) {
+        try {
+            const id = Number(req.params.id);
+            if (Number.isNaN(id)) {
+                console.warn('[OcorrenciaController] Cancelamento com ID inválido:', req.params.id);
+                return res.status(400).json({ error: 'ID inválido' });
+            }
+            console.log(`[OcorrenciaController] Solicitando cancelamento da ocorrência ${id}`);
+            const ocorrenciaExistente = await prisma_1.prisma.ocorrencia.findUnique({
+                where: { id }
+            });
+            if (!ocorrenciaExistente) {
+                console.warn(`[OcorrenciaController] Ocorrência ${id} não encontrada para cancelamento`);
+                return res.status(404).json({ error: 'Ocorrência não encontrada' });
+            }
+            if (ocorrenciaExistente.status === 'cancelada') {
+                console.log(`[OcorrenciaController] Ocorrência ${id} já está cancelada`);
+                const ocorrencia = await prisma_1.prisma.ocorrencia.findUnique({
+                    where: { id },
+                    include: {
+                        checklist: true,
+                        fotos: true
+                    }
+                });
+                return res.json(ocorrencia);
+            }
+            const agora = new Date();
+            const ocorrenciaAtualizada = await prisma_1.prisma.ocorrencia.update({
+                where: { id },
+                data: {
+                    status: 'cancelada',
+                    resultado: 'CANCELADO',
+                    sub_resultado: null,
+                    encerrada_em: (ocorrenciaExistente === null || ocorrenciaExistente === void 0 ? void 0 : ocorrenciaExistente.encerrada_em) ?? agora,
+                    atualizado_em: agora
+                },
+                include: {
+                    checklist: true,
+                    fotos: true
+                }
+            });
+            console.log(`[OcorrenciaController] Ocorrência ${id} cancelada com sucesso`);
+            return res.json(ocorrenciaAtualizada);
+        }
+        catch (error) {
+            console.error('[OcorrenciaController] Erro ao cancelar ocorrência:', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
+    }
     async delete(req, res) {
         try {
             const { id } = req.params;

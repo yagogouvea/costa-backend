@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
             email: usuario.email,
             nome: prestador === null || prestador === void 0 ? void 0 : prestador.nome,
             tipo: 'prestador'
-        }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '12h' });
+        }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '7d' });
         console.log('✅ [prestador/login] Login bem-sucedido');
         console.log('👤 [prestador/login] Usuário:', usuario.email);
         console.log('👤 [prestador/login] Prestador:', prestador.nome);

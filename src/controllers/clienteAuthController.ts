@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ensurePrisma } from '../lib/prisma';
+import { JWT_EXPIRATION } from '../config/jwt.config';
 
 // Função para normalizar CNPJ (remover pontos, traços e barras)
 const normalizarCNPJ = (cnpj: string): string => {
@@ -86,7 +87,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
           tipo: 'cliente'
         },
         process.env.JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: JWT_EXPIRATION }
       );
 
       console.log('Token de cliente gerado com sucesso');

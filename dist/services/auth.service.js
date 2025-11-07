@@ -41,13 +41,14 @@ class AuthService {
         const secret = process.env.JWT_SECRET;
         if (!secret)
             throw new Error('JWT_SECRET não definido');
+        const secretKey = process.env.JWT_SECRET;
         const token = jsonwebtoken_1.default.sign({
             id: user.id,
             name: user.name,
             email: user.email,
             role: user.role,
             permissions: user.permissions
-        }, secret, { expiresIn: jwt_config_1.JWT_EXPIRATION });
+        }, secretKey, { expiresIn: jwt_config_1.JWT_EXPIRATION });
         return {
             token,
             user: {

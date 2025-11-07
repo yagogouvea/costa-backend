@@ -97,6 +97,10 @@ class CheckListService {
                     nome_dp_batalhao: cleanedData.nome_dp_batalhao,
                     endereco_apreensao: cleanedData.endereco_apreensao,
                     numero_bo_noc: cleanedData.numero_bo_noc,
+                    // Liberado no local
+                    liberado_local_selecionado: cleanedData.liberado_local_selecionado,
+                    liberado_nome_responsavel: cleanedData.liberado_nome_responsavel,
+                    liberado_numero_referencia: cleanedData.liberado_numero_referencia,
                     // Recuperado com chave
                     recuperado_com_chave: cleanedData.recuperado_com_chave,
                     // Posse do veículo
@@ -110,6 +114,8 @@ class CheckListService {
                     justificativa_fotos: cleanedData.justificativa_fotos,
                     // Observação geral
                     observacao_ocorrencia: cleanedData.observacao_ocorrencia,
+                    // Veículo reaberto para contrato
+                    veiculo_reaberto_contrato: cleanedData.veiculo_reaberto_contrato,
                     // ✅ NOVO: Controle de tratamento - dispensado o checklist
                     dispensado_checklist: cleanedData.dispensado_checklist
                 }
@@ -155,6 +161,10 @@ class CheckListService {
                     nome_dp_batalhao: cleanedData.nome_dp_batalhao,
                     endereco_apreensao: cleanedData.endereco_apreensao,
                     numero_bo_noc: cleanedData.numero_bo_noc,
+                    // Liberado no local
+                    liberado_local_selecionado: cleanedData.liberado_local_selecionado,
+                    liberado_nome_responsavel: cleanedData.liberado_nome_responsavel,
+                    liberado_numero_referencia: cleanedData.liberado_numero_referencia,
                     // Recuperado com chave
                     recuperado_com_chave: cleanedData.recuperado_com_chave,
                     // Posse do veículo
@@ -168,6 +178,8 @@ class CheckListService {
                     justificativa_fotos: cleanedData.justificativa_fotos,
                     // Observação geral
                     observacao_ocorrencia: cleanedData.observacao_ocorrencia,
+                    // Veículo reaberto para contrato
+                    veiculo_reaberto_contrato: cleanedData.veiculo_reaberto_contrato,
                     // ✅ NOVO: Controle de tratamento - dispensado o checklist
                     dispensado_checklist: cleanedData.dispensado_checklist
                 }
@@ -207,13 +219,17 @@ class CheckListService {
         console.log(`📋 [CheckListService] Opções recebidas:`, {
             loja: data.loja_selecionada,
             guincho: data.guincho_selecionado,
-            apreensao: data.apreensao_selecionada
+            apreensao: data.apreensao_selecionada,
+            liberado_local: data.liberado_local_selecionado
         });
         const cleanedData = Object.assign({}, data);
+        cleanedData.veiculo_reaberto_contrato =
+            data.veiculo_reaberto_contrato === true || data.veiculo_reaberto_contrato === 'true';
         // Determinar qual opção foi selecionada
         const lojaSelected = data.loja_selecionada === true;
         const guinchoSelected = data.guincho_selecionado === true;
         const apreensaoSelected = data.apreensao_selecionada === true;
+        const liberadoSelected = data.liberado_local_selecionado === true;
         // ✅ LOJA SELECIONADA: Limpar dados de Guincho e Apreensão
         if (lojaSelected) {
             console.log(`🏪 [CheckListService] LOJA selecionada - limpando dados de Guincho e Apreensão`);
@@ -231,6 +247,11 @@ class CheckListService {
             cleanedData.nome_dp_batalhao = null;
             cleanedData.endereco_apreensao = null;
             cleanedData.numero_bo_noc = null;
+            // Limpar Liberado no local
+            cleanedData.liberado_local_selecionado = false;
+            cleanedData.liberado_nome_responsavel = null;
+            cleanedData.liberado_numero_referencia = null;
+            cleanedData.veiculo_reaberto_contrato = false;
         }
         // ✅ GUINCHO SELECIONADO: Limpar dados de Loja e Apreensão
         else if (guinchoSelected) {
@@ -246,6 +267,11 @@ class CheckListService {
             cleanedData.nome_dp_batalhao = null;
             cleanedData.endereco_apreensao = null;
             cleanedData.numero_bo_noc = null;
+            // Limpar Liberado no local
+            cleanedData.liberado_local_selecionado = false;
+            cleanedData.liberado_nome_responsavel = null;
+            cleanedData.liberado_numero_referencia = null;
+            cleanedData.veiculo_reaberto_contrato = false;
         }
         // ✅ APREENSÃO SELECIONADA: Limpar dados de Loja e Guincho
         else if (apreensaoSelected) {
@@ -265,6 +291,36 @@ class CheckListService {
             cleanedData.nome_motorista_guincho = null;
             cleanedData.destino_guincho = null;
             cleanedData.endereco_destino_guincho = null;
+            // Limpar Liberado no local
+            cleanedData.liberado_local_selecionado = false;
+            cleanedData.liberado_nome_responsavel = null;
+            cleanedData.liberado_numero_referencia = null;
+            cleanedData.veiculo_reaberto_contrato = false;
+        }
+        // ✅ LIBERADO NO LOCAL SELECIONADO: Limpar Loja, Guincho e Apreensão
+        else if (liberadoSelected) {
+            console.log(`✅ [CheckListService] LIBERADO NO LOCAL selecionado - limpando dados das outras opções`);
+            // Limpar Loja
+            cleanedData.loja_selecionada = false;
+            cleanedData.nome_loja = null;
+            cleanedData.endereco_loja = null;
+            cleanedData.nome_atendente = null;
+            cleanedData.matricula_atendente = null;
+            // Limpar Guincho
+            cleanedData.guincho_selecionado = false;
+            cleanedData.tipo_guincho = null;
+            cleanedData.valor_guincho = null;
+            cleanedData.telefone_guincho = null;
+            cleanedData.nome_empresa_guincho = null;
+            cleanedData.nome_motorista_guincho = null;
+            cleanedData.destino_guincho = null;
+            cleanedData.endereco_destino_guincho = null;
+            // Limpar Apreensão
+            cleanedData.apreensao_selecionada = false;
+            cleanedData.nome_dp_batalhao = null;
+            cleanedData.endereco_apreensao = null;
+            cleanedData.numero_bo_noc = null;
+            cleanedData.veiculo_reaberto_contrato = false;
         }
         // ✅ NENHUMA OPÇÃO SELECIONADA: Limpar todos os dados específicos
         else {
@@ -289,6 +345,7 @@ class CheckListService {
             cleanedData.nome_dp_batalhao = null;
             cleanedData.endereco_apreensao = null;
             cleanedData.numero_bo_noc = null;
+            cleanedData.veiculo_reaberto_contrato = false;
         }
         console.log(`✅ [CheckListService] Limpeza concluída. Resultado:`, {
             loja: cleanedData.loja_selecionada,

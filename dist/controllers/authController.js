@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginPrestador = exports.seedAdmin = exports.cadastrarCliente = exports.loginCliente = exports.login = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const jwt_config_1 = require("../config/jwt.config");
 const prisma_1 = require("../lib/prisma");
+const jwt_config_1 = require("../config/jwt.config");
 // Função para normalizar CNPJ (remover pontos, traços e barras)
 const normalizarCNPJ = (cnpj) => {
     return cnpj.replace(/[.\-\/]/g, '');
@@ -88,13 +88,14 @@ const login = async (req, res) => {
                     return;
                 }
                 console.log('Permissões do usuário:', permissions);
+                const jwtSecret = process.env.JWT_SECRET;
                 const token = jsonwebtoken_1.default.sign({
                     sub: user.id,
                     nome: user.name,
                     email: user.email,
                     role: user.role,
                     permissions: permissions
-                }, process.env.JWT_SECRET, { expiresIn: jwt_config_1.JWT_EXPIRATION });
+                }, jwtSecret, { expiresIn: jwt_config_1.JWT_EXPIRATION });
                 console.log('Token gerado com sucesso');
                 res.json({
                     token,
@@ -166,12 +167,13 @@ const loginCliente = async (req, res) => {
                 return;
             }
             // Gerar token JWT para cliente
+            const jwtSecret = process.env.JWT_SECRET;
             const token = jsonwebtoken_1.default.sign({
                 sub: cliente.id.toString(),
                 razaoSocial: cliente.nome,
                 cnpj: cliente.cnpj,
                 tipo: 'cliente'
-            }, process.env.JWT_SECRET, { expiresIn: jwt_config_1.JWT_EXPIRATION });
+            }, jwtSecret, { expiresIn: jwt_config_1.JWT_EXPIRATION });
             console.log('Token de cliente gerado com sucesso');
             res.json({
                 token,
@@ -323,7 +325,7 @@ const seedAdmin = async (_req, res) => {
                 name: 'Admin SEGTRACK',
                 email: 'admin@segtrack.com',
                 passwordHash: hashedPassword,
-                role: 'admin',
+                role: 'usuario',
                 permissions: JSON.stringify(permissions),
                 active: true,
             },

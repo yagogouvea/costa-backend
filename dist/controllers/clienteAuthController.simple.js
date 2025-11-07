@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.obterPerfilCliente = exports.alterarSenhaCliente = exports.cadastrarClienteAuth = exports.loginClienteAuth = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const jwt_config_1 = require("../config/jwt.config");
 const prisma_1 = require("../lib/prisma");
+const jwt_config_1 = require("../config/jwt.config");
 // TODO: Controller simplificado para autenticação de clientes
 // O modelo ClienteAuth não existe no schema atual, então implementamos uma versão básica
 const loginClienteAuth = async (req, res) => {
@@ -47,12 +47,13 @@ const loginClienteAuth = async (req, res) => {
             return;
         }
         // Gerar token JWT para cliente
+        const jwtSecret = process.env.JWT_SECRET;
         const token = jsonwebtoken_1.default.sign({
             sub: cliente.id.toString(),
             razaoSocial: cliente.nome,
             cnpj: cliente.cnpj,
             tipo: 'cliente'
-        }, process.env.JWT_SECRET, { expiresIn: jwt_config_1.JWT_EXPIRATION });
+        }, jwtSecret, { expiresIn: jwt_config_1.JWT_EXPIRATION });
         console.log('Token de cliente gerado com sucesso');
         res.json({
             token,

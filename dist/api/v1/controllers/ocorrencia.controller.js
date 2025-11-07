@@ -163,7 +163,86 @@ class OcorrenciaController {
             }
             console.log('✅ [OcorrenciaController] Ocorrência encontrada:', ocorrenciaExistente.id);
             console.log('🔍 [OcorrenciaController] Descrição atual:', ocorrenciaExistente.descricao);
-            console.log('🔍 [OcorrenciaController] Dados para atualização:', req.body);
+            console.log('🔍 [OcorrenciaController] Dados para atualização (brutos):', req.body);
+            const body = Object.assign({}, req.body);
+            const parseDate = (value) => {
+                if (value === undefined)
+                    return undefined;
+                if (value === null || value === '')
+                    return null;
+                if (value instanceof Date)
+                    return value;
+                if (typeof value === 'string') {
+                    const trimmed = value.trim();
+                    if (!trimmed)
+                        return null;
+                    const isoLike = /^\d{4}-\d{2}-\d{2}$/.test(trimmed)
+                        ? `${trimmed}T00:00:00.000Z`
+                        : trimmed;
+                    const parsed = new Date(isoLike);
+                    if (!Number.isNaN(parsed.getTime())) {
+                        return parsed;
+                    }
+                    console.warn('⚠️ [OcorrenciaController] Valor de data inválido ignorado:', value);
+                    return undefined;
+                }
+                return value;
+            };
+            const parseNumber = (value) => {
+                if (value === undefined)
+                    return undefined;
+                if (value === null || value === '')
+                    return null;
+                if (typeof value === 'number') {
+                    return Number.isNaN(value) ? undefined : value;
+                }
+                if (typeof value === 'string') {
+                    const normalized = value.replace(/,/g, '.');
+                    const parsed = Number(normalized);
+                    return Number.isNaN(parsed) ? undefined : parsed;
+                }
+                return undefined;
+            };
+            const dateFields = [
+                'inicio',
+                'chegada',
+                'termino',
+                'encerrada_em',
+                'data_acionamento',
+                'data_chamado',
+                'data_recuperacao'
+            ];
+            const numericFields = [
+                'km',
+                'km_final',
+                'km_inicial',
+                'despesas',
+                'valor_carga',
+                'km_acl'
+            ];
+            dateFields.forEach((field) => {
+                if (field in body) {
+                    const parsed = parseDate(body[field]);
+                    if (parsed !== undefined) {
+                        body[field] = parsed;
+                    }
+                    else {
+                        delete body[field];
+                    }
+                }
+            });
+            numericFields.forEach((field) => {
+                if (field in body) {
+                    const parsed = parseNumber(body[field]);
+                    if (parsed !== undefined) {
+                        body[field] = parsed;
+                    }
+                    else {
+                        delete body[field];
+                    }
+                }
+            });
+            console.log('🧹 [OcorrenciaController] Dados sanitizados para update:', body);
             // Verificar se há dados para atualizar
             if (!req.body || Object.keys(req.body).length === 0) {
                 console.log('❌ [OcorrenciaController] Nenhum dado para atualizar');
@@ -183,7 +262,7 @@ class OcorrenciaController {
             const ocorrencia = await prisma_1.prisma.$transaction(async (tx) => {
                 const updated = await tx.ocorrencia.update({
                     where: { id: Number(id) },
-                    data: req.body,
+                    data: body,
                     include: {
                         checklist: true,
                         fotos: true
@@ -208,6 +287,7 @@ class OcorrenciaController {
         }
     }
     async cancel(req, res) {
+        var _a;
         try {
             const id = Number(req.params.id);
             if (Number.isNaN(id)) {
@@ -240,7 +320,7 @@ class OcorrenciaController {
                     status: 'cancelada',
                     resultado: 'CANCELADO',
                     sub_resultado: null,
-                    encerrada_em: (ocorrenciaExistente === null || ocorrenciaExistente === void 0 ? void 0 : ocorrenciaExistente.encerrada_em) ?? agora,
+                    encerrada_em: (_a = ocorrenciaExistente.encerrada_em) !== null && _a !== void 0 ? _a : agora,
                     atualizado_em: agora
                 },
                 include: {

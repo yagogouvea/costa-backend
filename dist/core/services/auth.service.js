@@ -34,12 +34,13 @@ class AuthService {
         catch (_a) {
             permissions = [];
         }
+        const jwtSecret = process.env.JWT_SECRET;
         const token = jsonwebtoken_1.default.sign({
             id: user.id,
             name: user.name,
             role: user.role,
             permissions
-        }, process.env.JWT_SECRET, { expiresIn: jwt_config_1.JWT_EXPIRATION });
+        }, jwtSecret, { expiresIn: jwt_config_1.JWT_EXPIRATION });
         return {
             token,
             user: {

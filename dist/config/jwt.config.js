@@ -7,12 +7,15 @@ const normalize = (value) => {
         return undefined;
     }
     const trimmed = value.trim();
-    return trimmed.length > 0 ? trimmed : undefined;
+    if (trimmed.length === 0) {
+        return undefined;
+    }
+    return (Number.isNaN(Number(trimmed)) ? trimmed : Number(trimmed));
 };
 const getJwtExpiration = () => {
-    return normalize(process.env.JWT_EXPIRATION) || DEFAULT_JWT_EXPIRATION;
+    const normalized = normalize(process.env.JWT_EXPIRATION);
+    return (normalized !== null && normalized !== void 0 ? normalized : DEFAULT_JWT_EXPIRATION);
 };
 exports.getJwtExpiration = getJwtExpiration;
 exports.JWT_EXPIRATION = (0, exports.getJwtExpiration)();
 exports.DEFAULT_JWT_EXPIRATION_VALUE = DEFAULT_JWT_EXPIRATION;
-

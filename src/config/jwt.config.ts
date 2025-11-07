@@ -1,16 +1,23 @@
-const DEFAULT_JWT_EXPIRATION = '7d';
+import type { SignOptions } from 'jsonwebtoken';
 
-const normalize = (value?: string | null): string | undefined => {
+const DEFAULT_JWT_EXPIRATION: SignOptions['expiresIn'] = '7d';
+
+const normalize = (value?: string | null): SignOptions['expiresIn'] | undefined => {
   if (!value) {
     return undefined;
   }
 
   const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : undefined;
+  if (trimmed.length === 0) {
+    return undefined;
+  }
+
+  return (Number.isNaN(Number(trimmed)) ? trimmed : Number(trimmed)) as SignOptions['expiresIn'];
 };
 
-export const getJwtExpiration = (): string => {
-  return normalize(process.env.JWT_EXPIRATION) || DEFAULT_JWT_EXPIRATION;
+export const getJwtExpiration = (): SignOptions['expiresIn'] => {
+  const normalized = normalize(process.env.JWT_EXPIRATION);
+  return (normalized ?? DEFAULT_JWT_EXPIRATION) as SignOptions['expiresIn'];
 };
 
 export const JWT_EXPIRATION = getJwtExpiration();

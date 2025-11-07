@@ -53,7 +53,7 @@ export class AuthService {
 
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error('JWT_SECRET não definido');
-    const secretKey = process.env.JWT_SECRET as string;
+    const secretKey = process.env.JWT_SECRET as jwt.Secret;
     const token = jwt.sign(
       {
         id: user.id,

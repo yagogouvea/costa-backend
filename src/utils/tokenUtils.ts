@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { JWT_EXPIRATION } from '../config/jwt.config';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as jwt.Secret | undefined;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET não está definida. Configure a variável de ambiente JWT_SECRET.');
 }
@@ -13,7 +13,7 @@ export interface TokenPayload {
 }
 
 export const generateToken = (payload: TokenPayload): string => {
-  return jwt.sign(payload, JWT_SECRET as string, { expiresIn: JWT_EXPIRATION });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
 };
 
 export const verifyToken = (token: string): TokenPayload => {

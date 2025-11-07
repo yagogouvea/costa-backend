@@ -49,7 +49,7 @@ export class AuthService {
       permissions = [];
     }
 
-    const jwtSecret = process.env.JWT_SECRET as string;
+    const jwtSecret = process.env.JWT_SECRET as jwt.Secret;
     const token = jwt.sign(
       {
         id: user.id,

@@ -79,7 +79,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
       }
 
       // Gerar token JWT para cliente
-      const jwtSecret = process.env.JWT_SECRET as string;
+      const jwtSecret = process.env.JWT_SECRET as jwt.Secret;
       const token = jwt.sign(
         {
           sub: clienteAuth.cliente.id.toString(),

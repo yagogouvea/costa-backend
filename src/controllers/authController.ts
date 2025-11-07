@@ -104,7 +104,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         
         console.log('Permissões do usuário:', permissions);
 
-        const jwtSecret = process.env.JWT_SECRET as string;
+        const jwtSecret = process.env.JWT_SECRET as jwt.Secret;
         const token = jwt.sign(
           {
             sub: user.id,
@@ -195,7 +195,7 @@ export const loginCliente = async (req: Request, res: Response): Promise<void> =
       }
 
       // Gerar token JWT para cliente
-      const jwtSecret = process.env.JWT_SECRET as string;
+      const jwtSecret = process.env.JWT_SECRET as jwt.Secret;
       const token = jwt.sign(
         {
           sub: cliente.id.toString(),

@@ -12,6 +12,7 @@ import cnpjRoutes from './routes/cnpj';
 // import protectedRoutes from './routes/protectedRoutes'; // Temporariamente desabilitado
 import prestadorProtectedRoutes from './routes/prestadorProtectedRoutes.simple';
 import prestadoresPublicoRouter from './routes/prestadoresPublico'; // NOVO: Rota para cadastro público
+import prestadorAuthRoutes from './routes/prestadorAuthRoutes';
 import userRoutes from './routes/userRoutes';
 import v1Router from './api/v1/routes';
 
@@ -207,6 +208,7 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 // Registrar rotas de autenticação
+app.use('/api/auth/prestador', prestadorAuthRoutes);
 app.use('/api/auth', authRoutes);
 
 // Registrar rotas v1 (novas)

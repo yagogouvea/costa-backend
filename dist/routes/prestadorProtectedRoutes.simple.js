@@ -3,9 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_middleware_1 = require("../infrastructure/middleware/auth.middleware");
 const prisma_1 = require("../lib/prisma");
+const prestadorDashboardController_1 = require("../controllers/prestadorDashboardController");
 const router = (0, express_1.Router)();
 // Middleware de autenticação para todas as rotas
 router.use(auth_middleware_1.authenticateToken);
+router.get('/dashboard/resumo', prestadorDashboardController_1.getPrestadorDashboardResumo);
 // Rota de teste para prestador
 router.get('/test', async (req, res) => {
     try {

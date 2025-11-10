@@ -15,6 +15,7 @@ const cnpj_1 = __importDefault(require("./routes/cnpj"));
 // import protectedRoutes from './routes/protectedRoutes'; // Temporariamente desabilitado
 const prestadorProtectedRoutes_simple_1 = __importDefault(require("./routes/prestadorProtectedRoutes.simple"));
 const prestadoresPublico_1 = __importDefault(require("./routes/prestadoresPublico")); // NOVO: Rota para cadastro público
+const prestadorAuthRoutes_1 = __importDefault(require("./routes/prestadorAuthRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const routes_1 = __importDefault(require("./api/v1/routes"));
 console.log('Iniciando configuração do Express...');
@@ -182,6 +183,7 @@ app.get('/', (_req, res) => {
     res.json({ message: 'API Costa & Camargo - Funcionando!' });
 });
 // Registrar rotas de autenticação
+app.use('/api/auth/prestador', prestadorAuthRoutes_1.default);
 app.use('/api/auth', authRoutes_1.default);
 // Registrar rotas v1 (novas)
 app.use('/api/v1', routes_1.default);

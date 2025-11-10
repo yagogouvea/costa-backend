@@ -1,11 +1,14 @@
 import { Router } from 'express';
 import { authenticateToken } from '../infrastructure/middleware/auth.middleware';
 import { ensurePrisma } from '../lib/prisma';
+import { getPrestadorDashboardResumo } from '../controllers/prestadorDashboardController';
 
 const router = Router();
 
 // Middleware de autenticação para todas as rotas
 router.use(authenticateToken);
+
+router.get('/dashboard/resumo', getPrestadorDashboardResumo);
 
 // Rota de teste para prestador
 router.get('/test', async (req, res) => {

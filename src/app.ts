@@ -29,6 +29,7 @@ const allowedOrigins = [
   'https://cliente.painelsegtrack.com.br',
   'https://painel.costaecamargo.seg.br',
   'https://api.costaecamargo.seg.br',
+  'https://apoio.costaecamargo.seg.br',
   'https://prestador.costaecamargo.com.br', // NOVO: Domínio para cadastro de prestadores externos
   'http://localhost:5173',
   'http://localhost:5174',
